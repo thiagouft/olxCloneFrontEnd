@@ -26,7 +26,7 @@ export const PageArea = styled.div`
       flex: 1;
 
       input {
-        width: 100%;
+        width: auto;
         font-size: 14px;
         padding: 5px;
         border: 1px solid #ddd;

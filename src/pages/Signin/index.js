@@ -3,7 +3,11 @@ import { PageArea } from "./styled";
 import useAPI from "../../helpers/OlxAPI";
 import { doLogin } from "../../helpers/AuthHandler";
 
-import { PageContainer, PageTitle } from "../../components/MainComponents";
+import {
+  PageContainer,
+  PageTitle,
+  ErrorMessage,
+} from "../../components/MainComponents";
 
 const Page = () => {
   const api = useAPI();
@@ -32,23 +36,42 @@ const Page = () => {
     <PageContainer>
       <PageTitle>Login</PageTitle>
       <PageArea>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <form onSubmit={handleSubmit}>
           <label className="area">
             <div className="area--title">E-Mail</div>
             <div className="area--input">
-              <input type="email" disabled={disabled} />
+              <input
+                type="email"
+                disabled={disabled}
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
           </label>
           <label className="area">
             <div className="area--title">Senha</div>
             <div className="area--input">
-              <input type="password" disabled={disabled} />
+              <input
+                type="password"
+                disabled={disabled}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
           </label>
           <label className="area">
             <div className="area--title">Lembrar Senha</div>
             <div className="area--input">
-              <input type="checkbox" disabled={disabled} />
+              <input
+                type="checkbox"
+                disabled={disabled}
+                checked={remenberPassword}
+                onChange={() => setRemenberPassword(!remenberPassword)}
+              />
             </div>
           </label>
           <label className="area">
