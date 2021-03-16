@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { PageArea } from "./styled";
+import { PageArea, Fake } from "./styled";
 import useAPI from "../../helpers/OlxAPI";
 
 import { PageContainer } from "../../components/MainComponents";
@@ -17,14 +17,23 @@ const Page = () => {
       <PageArea>
         <div className="leftSide">
           <div className="box">
-            <div className="adImage">...</div>
+            <div className="adImage">{loading && <Fake height={300} />}</div>
             <div className="adInfo">
-              <div className="adName">...</div>
-              <div className="adDescription">...</div>
+              <div className="adName">{loading && <Fake height={20} />}</div>
+              <div className="adDescription">
+                {loading && <Fake height={100} />}
+              </div>
             </div>
           </div>
         </div>
-        <div className="rigtSide">...</div>
+        <div className="rigtSide">
+          <div className="box box--padding">
+            {loading && <Fake height={20} />}
+          </div>
+          <div className="box box--padding">
+            {loading && <Fake height={50} />}
+          </div>
+        </div>
       </PageArea>
     </PageContainer>
   );
