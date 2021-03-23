@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import MaskedInput from "react-text-mask";
 import createNumberMask from "text-mask-addons/dist/createNumberMask";
 import { PageArea } from "./styled";
@@ -9,10 +10,12 @@ import {
   PageTitle,
   ErrorMessage,
 } from "../../components/MainComponents";
+import { set } from "js-cookie";
 
 const Page = () => {
   const api = useAPI();
-  const fileFild = useRef();
+  const fileField = useRef();
+  const history = useHistory();
 
   const [categories, setCategories] = useState([]);
 
@@ -37,15 +40,42 @@ const Page = () => {
     e.preventDefault();
     setDisabled(true);
     setError("");
-    /*
-    const json = await api.login(email, password);
+    let errors = [];
 
-    if (json.error) {
-      setError(json.error);
+    if (!title.trim()) {
+      errors.push("Sem Titulo");
+    }
+
+    if (!category) {
+      errors.push("Sem Categoria");
+    }
+
+    if (errors.length === 0) {
+      const fData = new FormData();
+      fData.append("title", title);
+      fData.append("price", price);
+      fData.append("priceneg", priceNegotiable);
+      fData.append("desc", desc);
+      fData.append("cat", category);
+
+      if (fileField.current.files.length > 0) {
+        for (let i = 0; i < fileField.current.files.length; i++) {
+          fData.append("img", fileField.current.files[i]);
+        }
+      }
+
+      const json = await api.addAd(fData);
+
+      if (!json.error) {
+        history.push(`/ad/${json.id}`);
+        return;
+      } else {
+        setError(json.error);
+      }
     } else {
-      doLogin(json.token, remenberPassword);
-      window.location.href = "/";
-    }*/
+      setError(errors.join("\n"));
+    }
+
     setDisabled(false);
   };
 
@@ -130,7 +160,7 @@ const Page = () => {
           <label className="area">
             <div className="area--title">Imagens (1 ou mais)</div>
             <div className="area--input">
-              <input type="file" disabled={disabled} multiple ref={fileFild} />
+              <input type="file" disabled={disabled} multiple ref={fileField} />
             </div>
           </label>
           <label className="area">
