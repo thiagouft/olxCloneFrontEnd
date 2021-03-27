@@ -61,7 +61,10 @@ export const PageArea = styled.div`
 
     h2 {
       margin-top: 0;
-      font-size: 10px;
+      font-size: 15px;
+    }
+
+    .listWarning {
     }
 
     .list {
