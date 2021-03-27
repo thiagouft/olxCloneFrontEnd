@@ -8,6 +8,7 @@ import AdItem from "../../components/partials/AdItem";
 
 const Page = () => {
   const api = useAPI();
+  const history = useHistory();
 
   const useQueryString = () => {
     return new URLSearchParams(useLocation().search);
@@ -26,6 +27,23 @@ const Page = () => {
   const [stateList, setStateList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [adList, setAdList] = useState([]);
+
+  useEffect(() => {
+    let queryString = [];
+    if (q) {
+      queryString.push(`q=${q}`);
+    }
+    if (cat) {
+      queryString.push(`cat=${cat}`);
+    }
+    if (state) {
+      queryString.push(`state=${state}`);
+    }
+
+    history.replace({
+      search: `?${queryString.join("&")}`,
+    });
+  }, [q, cat, state]);
 
   useEffect(() => {
     const getStates = async () => {
@@ -64,9 +82,14 @@ const Page = () => {
               name="q"
               placeholder="O que você procura?"
               value={q}
+              onChange={(e) => setQ(e.target.value)}
             />
             <div className="filterName">Estado:</div>
-            <select name="state" value={state}>
+            <select
+              name="state"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+            >
               <option></option>
               {stateList.map((i, k) => (
                 <option key={k} value={i.name}>
@@ -82,6 +105,7 @@ const Page = () => {
                   className={
                     cat == i.slug ? "categoryItem active" : "categoryItem"
                   }
+                  onClick={() => setCat(i.slug)}
                 >
                   <img src={i.img} alt="" />
                   <span>{i.name}</span>
