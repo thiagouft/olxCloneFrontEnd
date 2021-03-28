@@ -5,6 +5,7 @@ import useAPI from "../../helpers/OlxAPI";
 
 import { PageContainer } from "../../components/MainComponents";
 import AdItem from "../../components/partials/AdItem";
+import { set } from "js-cookie";
 
 let timer;
 
@@ -31,18 +32,21 @@ const Page = () => {
   const [categories, setCategories] = useState([]);
   const [adList, setAdList] = useState([]);
   const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [resultOpacity, setResultOpacity] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const getAdsList = async () => {
     setLoading(true);
+    let offset = (currentPage - 1) * 2;
     const json = await api.getAds({
       sort: "desc",
       limit: 9,
       q,
       cat,
       state,
+      offset,
     });
     setAdList(json.ads);
     setAdsTotal(json.total);
@@ -57,6 +61,11 @@ const Page = () => {
       setPageCount(0);
     }
   }, [adsTotal]);
+
+  useEffect(() => {
+    setResultOpacity(0.3);
+    getAdsList();
+  }, [currentPage]);
 
   useEffect(() => {
     let queryString = [];
@@ -79,6 +88,7 @@ const Page = () => {
     }
     timer = setTimeout(getAdsList, 2000);
     setResultOpacity(0.3);
+    setCurrentPage(0);
   }, [q, cat, state]);
 
   useEffect(() => {
@@ -146,7 +156,9 @@ const Page = () => {
         </div>
         <div className="rigtSide">
           <h2>Resultados</h2>
-          {loading && <div className="listWarning">Carregando...</div>}
+          {loading && adList == 0 && (
+            <div className="listWarning">Carregando...</div>
+          )}
           {!loading && adList.length === 0 && (
             <div className="listWarning">Não encontramos resultados.</div>
           )}
@@ -158,7 +170,12 @@ const Page = () => {
 
           <div className="pagination">
             {pagination.map((i, k) => (
-              <div className="pageItem">{i}</div>
+              <div
+                onClick={() => setCurrentPage(i)}
+                className={i === currentPage ? "pageItem active" : "pageItem"}
+              >
+                {i}
+              </div>
             ))}
           </div>
         </div>
